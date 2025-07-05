@@ -38,10 +38,20 @@ export class UsersService {
     });
   }
 
-  findProfile(id: number) {
+  async findProfile(id: number) {
     if (!id) throw new ConflictException('User ID is required');
-    return this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        nickname: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+        role: true,
+        bio: true,
+        avatarUrl: true,
+      },
     });
   }
 

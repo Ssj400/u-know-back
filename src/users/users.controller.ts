@@ -7,11 +7,11 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-
+import { CurrentUser } from 'src/common/current-user.decorator';
+import { User } from '@prisma/client';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -29,8 +29,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
-  findProfile(@Req() req: any) {
-    return this.usersService.findProfile(req.user.userId);
+  findProfile(@CurrentUser() user: User) {
+    return this.usersService.findProfile(user.id);
   }
   @Patch(':id')
   update() {
