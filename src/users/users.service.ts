@@ -29,7 +29,16 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        nickname: true,
+        email: true,
+        role: true,
+        bio: true,
+        avatarUrl: true,
+      },
+    });
   }
 
   findByEmail(email: string) {
@@ -46,8 +55,6 @@ export class UsersService {
         id: true,
         nickname: true,
         email: true,
-        createdAt: true,
-        updatedAt: true,
         role: true,
         bio: true,
         avatarUrl: true,

@@ -1,12 +1,12 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Delete,
   UseGuards,
   BadRequestException,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -16,20 +16,14 @@ import { User } from '@prisma/client';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create() {
-    return 'fjafjadsfñ';
-  }
-
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('/profile')
-  findProfile(@CurrentUser() user: User) {
-    return this.usersService.findProfile(user.id);
+  @Get('/profile/:id')
+  findProfile(@Param('id') id: string) {
+    return this.usersService.findProfile(Number(id));
   }
 
   @UseGuards(JwtAuthGuard)
