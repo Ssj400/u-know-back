@@ -81,4 +81,26 @@ export class PostsService {
       },
     });
   }
+
+  async remove(id: number, user: User) {
+    const postExists = await this.prisma.post.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!postExists) throw new NotFoundException('Post not found');
+
+    const permission = postExists.authorId === user.id || user.role === 'ADMIN';
+
+    if (!permission)
+      throw new UnauthorizedException(
+        'You do not have permission to delete this post',
+      );
+
+    return this.prisma.post.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
