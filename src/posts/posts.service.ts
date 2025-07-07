@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -7,6 +7,13 @@ export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createPostDto: CreatePostDto, userId: number) {
+    const categoryExists = await this.prisma.category.findUnique({
+      where: {
+        id: createPostDto.categoryId,
+      },
+    });
+    if (!categoryExists) throw new NotFoundException('Category not found');
+
     const newPost = await this.prisma.post.create({
       data: {
         title: createPostDto.title,
