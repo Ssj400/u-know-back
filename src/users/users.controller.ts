@@ -9,10 +9,12 @@ import {
   Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentUser } from 'src/common/current-user.decorator';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Roles } from 'src/common/roles-decorator';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -40,5 +42,12 @@ export class UsersController {
   @Delete('profile')
   remove(@CurrentUser() user: User) {
     return this.usersService.remove(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('admin')
+  adminOnly() {
+    return { message: 'This route is accessible only by admin users.' };
   }
 }
