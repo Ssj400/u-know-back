@@ -25,4 +25,33 @@ export class CategoriesService {
       },
     });
   }
+
+  async update(id: number, updateCategoryDto: CreateCategoryDto) {
+    const exists = await this.prisma.category.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!exists) throw new ConflictException('Category not found');
+
+    return await this.prisma.category.update({
+      where: { id },
+      data: updateCategoryDto,
+    });
+  }
+
+  async remove(id: number) {
+    const exists = await this.prisma.category.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!exists) throw new ConflictException('Category not found');
+
+    return this.prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
