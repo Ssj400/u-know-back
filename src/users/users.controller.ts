@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { CurrentUser } from 'src/common/current-user.decorator';
 import { User } from '@prisma/client';
+import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -28,7 +29,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('profile')
-  updateProfile(@CurrentUser() user: User, @Body() updateData: Partial<User>) {
+  updateProfile(@CurrentUser() user: User, @Body() updateData: UpdateUserDto) {
     if (!updateData) {
       throw new BadRequestException('No update data provided');
     }
