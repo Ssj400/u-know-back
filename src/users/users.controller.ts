@@ -4,9 +4,9 @@ import {
   Post,
   Body,
   Patch,
-  Param,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -21,7 +21,6 @@ export class UsersController {
     return 'fjafjadsfñ';
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
@@ -32,13 +31,19 @@ export class UsersController {
   findProfile(@CurrentUser() user: User) {
     return this.usersService.findProfile(user.id);
   }
-  @Patch(':id')
-  update() {
-    return 'jdkslñjf';
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  updateProfile(@CurrentUser() user: User, @Body() updateData: Partial<User>) {
+    if (!updateData) {
+      throw new BadRequestException('No update data provided');
+    }
+    return this.usersService.updateProfile(user.id, updateData);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('profile')
+  remove(@CurrentUser() user: User) {
+    return this.usersService.remove(user.id);
   }
 }
