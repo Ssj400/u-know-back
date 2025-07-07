@@ -48,6 +48,23 @@ export class PostsService {
     });
   }
 
+  async findOne(id: number) {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+        category: true,
+      },
+    });
+    if (!post) throw new NotFoundException('Post not found');
+    return post;
+  }
+
   async update(id: number, updatePostDto: UpdatePostDto, user: User) {
     if (updatePostDto.categoryId) {
       const categoryExists = await this.prisma.category.findUnique({

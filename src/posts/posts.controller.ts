@@ -31,6 +31,11 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findOne(id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
