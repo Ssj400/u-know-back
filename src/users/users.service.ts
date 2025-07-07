@@ -58,6 +58,22 @@ export class UsersService {
         role: true,
         bio: true,
         avatarUrl: true,
+        posts: {
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
       },
     });
   }
