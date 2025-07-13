@@ -58,6 +58,8 @@ export class UsersService {
         role: true,
         bio: true,
         avatarUrl: true,
+        createdAt: true,
+        updatedAt: true,
         posts: {
           select: {
             id: true,
@@ -69,6 +71,15 @@ export class UsersService {
                 name: true,
               },
             },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            content: true,
           },
           orderBy: {
             createdAt: 'desc',
