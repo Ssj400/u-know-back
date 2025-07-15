@@ -7,6 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentsService {
@@ -82,6 +83,28 @@ export class CommentsService {
     return await this.Prisma.comment.delete({
       where: {
         id: commentId,
+      },
+    });
+  }
+
+  async update(user: User, commentId: number, dto: UpdateCommentDto) {
+    const comment = await this.Prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) throw new NotFoundException('Comment not found');
+    if (comment.authorId !== user.id && user.role !== 'ADMIN')
+      throw new UnauthorizedException('Unauthorized');
+    if (!dto) throw new BadRequestException('content required');
+
+    return await this.Prisma.comment.update({
+      where: {
+        id: commentId,
+      },
+      data: {
+        content: dto.content,
       },
     });
   }
