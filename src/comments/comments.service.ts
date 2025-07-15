@@ -11,7 +11,19 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 export class CommentsService {
   constructor(private Prisma: PrismaService) {}
   findAll() {
-    return this.Prisma.comment.findMany();
+    return this.Prisma.comment.findMany({
+      include: {
+        author: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
   }
 
   async create(dto: CreateCommentDto, postId: number, user: User) {
