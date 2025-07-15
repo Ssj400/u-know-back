@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -22,5 +26,33 @@ export class CommentsService {
       },
     });
     return newComment;
+  }
+
+  async findAllFromPost(postId: number) {
+    if (!postId) throw new BadRequestException('post id missing');
+    const postExist = await this.Prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!postExist) throw new NotFoundException('post not found');
+
+    return this.Prisma.comment.findMany({
+      where: {
+        postId: postId,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
   }
 }

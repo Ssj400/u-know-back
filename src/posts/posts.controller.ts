@@ -66,4 +66,9 @@ export class PostsController {
   ) {
     return this.commentsService.create(dto, postId, user);
   }
+
+  @Get(':postId/comments')
+  findPostComments(@Param('postId', ParseIntPipe) postId: number) {
+    return this.commentsService.findAllFromPost(postId);
+  }
 }
