@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
@@ -64,6 +65,23 @@ export class CommentsService {
       },
       orderBy: {
         createdAt: 'asc',
+      },
+    });
+  }
+
+  async remove(user: User, commentId: number) {
+    const comment = await this.Prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+    if (!comment) throw new NotFoundException('Comment not found');
+    if (comment.authorId !== user.id && user.role !== 'ADMIN')
+      throw new UnauthorizedException('Unauthorized');
+
+    return await this.Prisma.comment.delete({
+      where: {
+        id: commentId,
       },
     });
   }
