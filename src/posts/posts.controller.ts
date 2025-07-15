@@ -15,10 +15,15 @@ import { CurrentUser } from 'src/common/current-user.decorator';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly commentsService: CommentsService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -50,5 +55,15 @@ export class PostsController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: User) {
     return this.postsService.remove(id, user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':postId/comments')
+  createComment(
+    @Param('postId', ParseIntPipe) postId: number,
+    @CurrentUser() user: User,
+    @Body() dto: CreateCommentDto,
+  ) {
+    return this.commentsService.create(dto, postId, user);
   }
 }
