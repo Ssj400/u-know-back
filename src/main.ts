@@ -20,13 +20,17 @@ async function bootstrap() {
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('U-Know API')
+    .setDescription('API for the U-Know application')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('auth')
+    .addTag('users')
+    .addTag('posts')
+    .addTag('comments')
+    .addTag('categories')
     .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
