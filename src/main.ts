@@ -24,7 +24,6 @@ async function bootstrap() {
     .setDescription('API for the U-Know application')
     .setVersion('1.0')
     .addTag('auth')
-    .addTag('users')
     .addTag('posts')
     .addTag('comments')
     .addTag('categories')
