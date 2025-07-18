@@ -23,7 +23,7 @@ export class CommentsService {
         },
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     });
   }
@@ -82,7 +82,7 @@ export class CommentsService {
         },
       },
       orderBy: {
-        createdAt: 'asc',
+        createdAt: 'desc',
       },
     });
   }
