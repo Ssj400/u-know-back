@@ -32,11 +32,28 @@ export class CommentsService {
     if (!dto || !postId || !user)
       throw new BadRequestException('Parameters missing');
 
-    const newComment = await this.Prisma.comment.create({
+    const commentCreated = await this.Prisma.comment.create({
       data: {
         content: dto.content,
         authorId: user.id,
         postId: postId,
+      },
+    });
+
+    const newComment = await this.Prisma.comment.findFirst({
+      where: {
+        id: commentCreated.id,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
     return newComment;
