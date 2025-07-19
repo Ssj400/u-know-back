@@ -19,6 +19,7 @@ model User {
   updatedAt   DateTime  @updatedAt
   posts       Post[]
   comments    Comment[]
+  refreshToken String?
 }
 
 model Post {

@@ -1,4 +1,10 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
@@ -25,5 +31,19 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   login(@Body() dto: LoginAuthDto) {
     return this.authService.login(dto);
+  }
+
+  @Post('refresh-token')
+  @ApiOperation({ summary: 'Refresh user access token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Access token refreshed successfully.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  refreshToken(@Body('refreshToken') refreshToken: string) {
+    if (!refreshToken) {
+      throw new BadRequestException('Refresh token is required');
+    }
+    return this.authService.refreshToken(refreshToken);
   }
 }
