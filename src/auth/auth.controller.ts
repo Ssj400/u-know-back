@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -10,6 +11,8 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { RefreshJwtAuthGuard } from 'src/common/guards/refresh-jwt-auth.guard';
+import { AuthRequest } from './intefaces/auth-request.interface';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -33,17 +36,19 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  @Post('refresh-token')
+  @UseGuards(RefreshJwtAuthGuard)
+  @Post('refresh')
   @ApiOperation({ summary: 'Refresh user access token' })
   @ApiResponse({
     status: 200,
     description: 'Access token refreshed successfully.',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  refreshToken(@Body('refreshToken') refreshToken: string) {
-    if (!refreshToken) {
-      throw new BadRequestException('Refresh token is required');
+  refreshToken(@Req() request: AuthRequest) {
+    const { user } = request;
+    if (!user) {
+      throw new BadRequestException('User not found in request');
     }
-    return this.authService.refreshToken(refreshToken);
+    return this.authService.refreshToken(user.id, user.role);
   }
 }

@@ -9,7 +9,6 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { JwtPayload } from './intefaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -77,39 +76,12 @@ export class AuthService {
     });
   }
 
-  async refreshToken(refreshToken: string): Promise<{ access_token: string }> {
-    let userData: JwtPayload;
-    try {
-      userData = this.jwtService.verify<JwtPayload>(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET,
-      });
-    } catch (error) {
-      console.error('Invalid refresh token', error);
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    if (!userData || !userData.sub) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const user = await this.Prisma.user.findUnique({
-      where: { id: userData.sub },
-    });
-
-    if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const isValid = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken as string,
-    );
-    if (!isValid) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const tokens = await this.buildTokens(user.id, user.role);
-    await this.updateRefreshToken(user.id, tokens.refresh_token);
+  async refreshToken(
+    userId: number,
+    userRole: string,
+  ): Promise<{ access_token: string }> {
+    const tokens = await this.buildTokens(userId, userRole);
+    await this.updateRefreshToken(userId, tokens.refresh_token);
     return { access_token: tokens.access_token };
   }
 }

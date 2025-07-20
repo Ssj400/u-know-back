@@ -60,6 +60,7 @@ export class UsersService {
         avatarUrl: true,
         createdAt: true,
         updatedAt: true,
+        refreshToken: true,
         posts: {
           select: {
             id: true,
