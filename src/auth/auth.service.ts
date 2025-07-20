@@ -84,4 +84,12 @@ export class AuthService {
     await this.updateRefreshToken(userId, tokens.refresh_token);
     return { access_token: tokens.access_token };
   }
+
+  async logout(userId: number): Promise<{ message: string }> {
+    await this.Prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: null },
+    });
+    return { message: 'User logged out successfully.' };
+  }
 }

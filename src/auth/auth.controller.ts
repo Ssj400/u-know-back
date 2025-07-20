@@ -51,4 +51,16 @@ export class AuthController {
     }
     return this.authService.refreshToken(user.id, user.role);
   }
+
+  @Post('logout')
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({ status: 200, description: 'User logged out successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  logout(@Req() request: AuthRequest) {
+    const { user } = request;
+    if (!user) {
+      throw new BadRequestException('User not found in request');
+    }
+    return this.authService.logout(user.id);
+  }
 }
