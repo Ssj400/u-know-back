@@ -33,7 +33,10 @@ export class CategoriesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all categories' })
-  @ApiResponse({ status: 200, description: 'Categories retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Categories retrieved successfully.',
+  })
   findAll() {
     return this.categoriesService.findAll();
   }

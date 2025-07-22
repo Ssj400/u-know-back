@@ -18,14 +18,18 @@ export class AuthService {
     private Prisma: PrismaService,
   ) {}
 
-  async register(dto: RegisterAuthDto): Promise<{ access_token: string }> {
+  async register(
+    dto: RegisterAuthDto,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const user = await this.usersService.create(dto);
     const tokens = await this.buildTokens(user.id, user.role);
     await this.updateRefreshToken(user.id, tokens.refresh_token);
     return tokens;
   }
 
-  async login(dto: LoginAuthDto): Promise<{ access_token: string }> {
+  async login(
+    dto: LoginAuthDto,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const { email, password } = dto;
 
     if (!email || !password) {
