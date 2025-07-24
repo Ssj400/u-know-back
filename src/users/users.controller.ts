@@ -7,6 +7,7 @@ import {
   UseGuards,
   BadRequestException,
   Param,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -16,9 +17,13 @@ import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/common/roles-decorator';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { PostsService } from 'src/posts/posts.service';
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly postsService: PostsService,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -145,5 +150,16 @@ export class UsersController {
   })
   adminOnly() {
     return { message: 'This route is accessible only by admin users.' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/posts')
+  findUserPosts(@Param('id') id: string, @CurrentUser() user: User) {
+    if (user.role !== 'ADMIN' && user.id !== Number(id)) {
+      throw new UnauthorizedException(
+        'You do not have permission to view these posts',
+      );
+    }
+    return this.postsService.findUserPosts(Number(id));
   }
 }

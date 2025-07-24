@@ -120,4 +120,23 @@ export class PostsService {
       },
     });
   }
+
+  async findUserPosts(userId: number) {
+    const userPosts = await this.prisma.post.findMany({
+      where: {
+        authorId: userId,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            nickname: true,
+          },
+        },
+        category: true,
+      },
+    });
+
+    return userPosts;
+  }
 }
