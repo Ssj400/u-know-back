@@ -135,6 +135,9 @@ export class PostsService {
         },
         category: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return userPosts;
