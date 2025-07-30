@@ -91,7 +91,6 @@ export class UsersService {
   }
 
   updateProfile(id: number, updateData: Prisma.UserUpdateInput) {
-    console.log(updateData);
     return this.prisma.user.update({
       where: { id },
       data: updateData,
