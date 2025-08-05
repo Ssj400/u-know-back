@@ -2,10 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { JwtPayload } from './intefaces/jwt-payload.interface';
 import * as bcrypt from 'bcrypt';
-import { refreshTokenCookieExtractor } from 'src/common/cookie-extractor';
+import { refreshTokenCookieExtractor } from '../common/cookie-extractor';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(

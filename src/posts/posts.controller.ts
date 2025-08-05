@@ -11,12 +11,12 @@ import {
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
-import { CurrentUser } from 'src/common/current-user.decorator';
+import { CurrentUser } from '../common/current-user.decorator';
 import { User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
-import { CommentsService } from 'src/comments/comments.service';
+import { CreateCommentDto } from '../comments/dto/create-comment.dto';
+import { CommentsService } from '../comments/comments.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('posts')

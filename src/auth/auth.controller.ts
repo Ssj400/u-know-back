@@ -12,12 +12,12 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { RefreshJwtAuthGuard } from 'src/common/guards/refresh-jwt-auth.guard';
+import { RefreshJwtAuthGuard } from '../common/guards/refresh-jwt-auth.guard';
 import { AuthRequest } from './intefaces/auth-request.interface';
 import { Response } from 'express';
-import { CurrentUser } from 'src/common/current-user.decorator';
+import { CurrentUser } from '../common/current-user.decorator';
 import { User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
